@@ -1,0 +1,74 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>PixiJS 简单 DEMO</h1>
+  </body>
+</html>
+<script src="https://pixijs.download/release/pixi.js"></script>
+<script>
+  // The application will create a renderer using WebGL, if possible,
+  // with a fallback to a canvas render. It will also setup the ticker
+  // and the root stage PIXI.Container
+  // 1. 创建一个PIXI的应用  PIXI.Application会根据浏览器支持决定使用Canvas还是WebGL绘制
+  const app = new PIXI.Application({
+    transparent: true // 设置背景透明
+  });
+
+  // PIXI.Application的options对象 默认属性值
+  // 具体说明可参考 http://pixijs.download/release/docs/PIXI.Application.html
+  // let app = new PIXI.Application({
+  //   width: 256,         // default: 800
+  //   height: 256,        // default: 600
+  //   antialias: true,    // default: false
+  //   transparent: false, // default: false
+  //   resolution: 1       // default: 1
+  //   }
+  // );
+
+  // The application will create a canvas element for you that you
+  // can then insert into the DOM
+  document.body.appendChild(app.view);
+
+  // 2. 舞台对象app.stage
+
+  // load the texture we need
+  // loader对象可以加载任何需要种类的图像资源
+  // 通过load（setup） setup方法来使用
+  app.loader.add('bunny', '/src/img/daoyou.png').load((loader, resources) => {
+      // This creates a texture from a 'bunny.png' image
+      const bunny = new PIXI.Sprite(resources.bunny.texture);
+
+      // Setup the position of the bunny
+      bunny.x = app.renderer.width / 2;
+      bunny.y = app.renderer.height / 2;
+
+      // Rotate around the center
+      bunny.anchor.x = 0.5;
+      bunny.anchor.y = 0.5;
+
+      // Add the bunny to the scene we are building
+      app.stage.addChild(bunny);
+
+      // Listen for frame updates
+      app.ticker.add(() => {
+          // each frame we spin the bunny around a bit
+          bunny.rotation += 0.01;
+      });
+  });
+
+</script>
+<!-- <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+<script>
+  const onlineOfflineTime = ['2022-04-26', '2022-04-26']
+  const [start, end] = onlineOfflineTime
+  const today = dayjs().format('YYYY-MM-DD')
+  if (dayjs(today).isBefore(dayjs(start))) {
+    console.log('活动尚未开始～敬请期待')
+  }
+  if (dayjs(today).isAfter(dayjs(end))) {
+    console.log('活动已结束～');
+  }
+  console.log('活动进行中..')
+  
+</script> -->

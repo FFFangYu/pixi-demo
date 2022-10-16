@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <title>PixiJs</title>
+    <div class="button"></div>
+  </head>
+  <body>
+
+    <script>
+      //Create a Pixi Application
+      let app = new PIXI.Application({
+          width: 256,
+          height: 256,                       
+          antialias: true,
+          transparent: true,
+          resolution: 1
+        }
+      );
+      const  button = document.getElementsByClassName('button')[0]
+      let sprite;
+
+      function addResource(name, path) {
+        const resources = app.loader.resources
+        if (!resources[name]?.texture) {
+          console.log('add ', name);
+          app.loader.add(name, path).load((loader, resources) => {
+            return resources[name].texture
+          })
+        }else {
+          console.log('has ', name);
+          return resources[name].texture
+        }
+      }
+
+      function initSprite(texture) {
+        const sprite = new PIXI.Sprite(texture);
+        // sprite.scale.set(1.5);
+        return sprite;
+        app.stage.addChild(sprite);
+      }
+
+      function toggleTexture(texture) {
+        if (sprite) {
+          console.log(sprite)
+          sprite = initSprite(texture)
+        } 
+      }
+      
+      //Add the canvas that Pixi automatically created for you to the HTML document
+      button.appendChild(app.view);
+      app.loader.add('cat', '/src/img/cat.png').load((loader, resources) => {
+        sprite = new PIXI.Sprite(resources.cat.texture);
+        app.stage.addChild(sprite);
+      })
+      // sprite = initSprite(addResource('cat', '/src/img/cat.png'))
+      // console.log(sprite)
+      
+
+
+      
+
+      
+      button.addEventListener('click', {
+        handleEvent(e) {
+          let prefix;
+          switch(e.detail) {
+            case 1: prefix = 'single'; break;
+            case 2: prefix = 'double'; break;
+            case 3: prefix = 'triple'; break;
+            default: prefix = e.detail + 'th'; break;
+          }
+          console.log('That was a ' + prefix + 'click');
+          if (prefix == 'single') {
+            toggleTexture(addResource('daoyou', '/src/img/daoyou.png'));
+            
+            setTimeout(() => {
+              toggleTexture(addResource('cat', '/src/img/cat.png'));
+              console.log(app)
+            }, 2000);
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

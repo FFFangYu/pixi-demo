@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <title>打工小智</title>
+  </head>
+  <body>
+
+  <script>
+    //Create a Pixi Application
+    let app = new PIXI.Application({
+        width: 256,
+        height: 256,                       
+        antialias: true,
+        transparent: false,
+        resolution: 1
+      }
+    );
+
+    //Add the canvas that Pixi automatically created for you to the HTML document
+    document.body.appendChild(app.view);
+
+    //load an image and run the `setup` function when it's done
+    app.loader.add('cat', '/src/img/cat.png').load((loader, resources) => {
+      // This creates a texture from a 'bunny.png' image
+      const cat = new PIXI.Sprite(resources.cat.texture);
+      //Add the cat to the stage
+      app.stage.addChild(cat);
+
+      setTimeout(() => {
+        cat.visible = false;
+      }, 2000);
+    });
+
+  </script>
+  </body>
+</html>

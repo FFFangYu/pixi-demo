@@ -1,0 +1,51 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>JS test</h1>
+    <div></div>
+  </body>
+</html>
+<script>
+
+    var flag = false;
+    var div = document.querySelector('div');
+
+    div.addEventListener('mousedown', function () {
+       
+        flag = true;
+
+        document.addEventListener('mousemove', function (e) {
+            if (flag == false) {
+                return;
+            } else {
+                var x = e.pageX;
+                var y = e.pageY;
+                // x y 减去的是图片宽度的一半
+                div.style.left = x - 50 + 'px';
+                div.style.top = y - 50 + 'px';
+            }
+        })
+
+        document.addEventListener('mouseup', function () {
+
+            flag = false;
+            
+        })
+    })
+</script>
+
+
+<script>
+  
+</script>
+<style>
+    div {
+        position: absolute;
+        top: 60px;
+        width: 100px;
+        height: 100px;
+        background-color: pink;
+    }
+</style>
+
