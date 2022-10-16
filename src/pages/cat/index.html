@@ -13,54 +13,74 @@
           width: 256,
           height: 256,                       
           antialias: true,
-          transparent: true,
+          transparent: false, // 是否透明
           resolution: 1
         }
       );
       const  button = document.getElementsByClassName('button')[0]
-      let sprite;
 
+      /**
+       * 添加资源 loader
+       * 已有资源 不重复添加
+       * */
       function addResource(name, path) {
         const resources = app.loader.resources
-        if (!resources[name]?.texture) {
-          console.log('add ', name);
-          app.loader.add(name, path).load((loader, resources) => {
-            return resources[name].texture
-          })
-        }else {
-          console.log('has ', name);
-          return resources[name].texture
+        return new Promise((resolve, reject) => {
+          if (!resources[name]?.texture) {
+            console.log('add ', name);
+            app.loader.add(name, path).load((loader, resources) => {
+              resolve(resources[name].texture)
+            })
+          }else {
+            console.log('has ', name);
+            resolve(resources[name].texture)
+          }
+        })
+      }
+
+      /**
+       * 初始化精灵
+       * */
+      function initSprite(name,texture) {
+        const sprite = new PIXI.Sprite(texture);
+        sprite.name = name;
+        return sprite;
+      }
+      /**
+       * 设置精灵显示
+       * */
+      function setVisibleByName(name) {
+        for (let sprite of app.stage.children) {
+          sprite.visible = sprite.name === name
         }
       }
-
-      function initSprite(texture) {
-        const sprite = new PIXI.Sprite(texture);
-        // sprite.scale.set(1.5);
-        return sprite;
-        app.stage.addChild(sprite);
-      }
-
-      function toggleTexture(texture) {
-        if (sprite) {
-          console.log(sprite)
-          sprite = initSprite(texture)
-        } 
+      /**
+       * 切换贴图
+       * */
+      function toggleTexture(name, path) {
+        const sprite = app.stage.getChildByName(name)
+        if (!sprite) {
+          addResource(name, path).then(texture => {
+            console.log('toggleTexture:')
+            const sprite = initSprite(name, texture)
+            console.log(app.stage)
+            app.stage.addChild(sprite);
+          })
+        }
+        setVisibleByName(name)  
       }
       
       //Add the canvas that Pixi automatically created for you to the HTML document
       button.appendChild(app.view);
       app.loader.add('cat', '/src/img/cat.png').load((loader, resources) => {
-        sprite = new PIXI.Sprite(resources.cat.texture);
+        const sprite = new PIXI.Sprite(resources.cat.texture);
+        sprite.name = 'cat'
         app.stage.addChild(sprite);
       })
-      // sprite = initSprite(addResource('cat', '/src/img/cat.png'))
-      // console.log(sprite)
-      
-
-
-      
-
-      
+   
+      /**
+       * 事件绑定一定要在dom元素上
+       * */
       button.addEventListener('click', {
         handleEvent(e) {
           let prefix;
@@ -70,12 +90,12 @@
             case 3: prefix = 'triple'; break;
             default: prefix = e.detail + 'th'; break;
           }
-          console.log('That was a ' + prefix + 'click');
+          console.log('That was a ' + prefix + ' click');
           if (prefix == 'single') {
-            toggleTexture(addResource('daoyou', '/src/img/daoyou.png'));
+            toggleTexture('daoyou', '/src/img/daoyou.png');
             
             setTimeout(() => {
-              toggleTexture(addResource('cat', '/src/img/cat.png'));
+              toggleTexture('cat', '/src/img/cat.png');
               console.log(app)
             }, 2000);
           }
